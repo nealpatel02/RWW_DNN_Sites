@@ -1,0 +1,57 @@
+trigger:
+- main
+
+pool:
+  vmImage: windows-latest
+
+steps:
+- task: NuGetToolInstaller@1
+  inputs:
+    versionSpec: "5.x"
+
+- task: UseNode@1
+  inputs:
+    version: "14.x"
+    
+- task: NuGetRestore@1
+  inputs:
+    solution: "RwwDNN.sln"
+    selectOrConfig: "select"
+
+- task: Npm@1
+  inputs:
+    command: "ci"
+    workingDir: "Skin/IMAGINiTV2"
+
+- task: Npm@1
+  inputs:
+    command: "ci"
+    workingDir: "Skin/IMAGINiTV2Purple"
+
+- task: gulp@1
+  inputs:
+    targets: "package"
+    gulpFile: "Skin/IMAGINiTV2/gulpfile.js"
+    enableCodeCoverage: false
+
+- task: gulp@1
+  inputs:
+    targets: "package"
+    gulpFile: "Skin/IMAGINiTV2Purple/gulpfile.js"
+    enableCodeCoverage: false
+
+- task: MSBuild@1
+  inputs:
+    solution: "RwwDNN.sln"
+    configuration: "Release"
+    maximumCpuCount: true
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: "$(System.DefaultWorkingDirectory)/Skin/"
+    Contents: "*/Build/*.zip"
+    TargetFolder: "$(System.DefaultWorkingDirectory)/Website/Install/Skin"
+    flattenFolders: true
+
+- publish: "$(System.DefaultWorkingDirectory)/Website/Install"
+  artifact: "Packages"

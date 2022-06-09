@@ -1,0 +1,11 @@
+{
+  "generator-upendodnn": {
+    "promptValues": {
+      "yourName": "Rand Corporation",
+      "company": "ImaginIt",
+      "companyUrl": "https://www.rand.org",
+      "emailAddy": "solutions@upendoventures.com",
+      "companyName": "ImaginIt"
+    }
+  }
+}
